@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import Layout from "./Layout";
 import { darkTheme, lightTheme, RouterNames, TOKEN } from "./constants";
-import { NotFound, PostDetail, PostsList, Welcome } from "./pages";
+import { NotFound, PostDetail, PostsList, Profile, Welcome } from "./pages";
 import { useAppDispatch, useAppSelector } from "./store";
 import { setModalAuth } from "./store/modals";
 import { API } from "./api";
@@ -28,6 +28,7 @@ const App: React.FC = () => {
           <Route path="*" element={<NotFound />} />
           <Route path={RouterNames.list} element={<PostsList />} />
           <Route path={RouterNames.detail} element={<PostDetail />} />
+          <Route path={RouterNames.profile} element={<Profile />} />
         </Route>
       </Routes>
     </ThemeProvider>

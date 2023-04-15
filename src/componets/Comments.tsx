@@ -6,6 +6,7 @@ import {
   AccordionSummary,
   Box,
   Button,
+  CardMedia,
   Typography,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
@@ -48,7 +49,7 @@ const Comments: React.FC<ICommentsProps> = ({ initComments }) => {
     API.GetUsersInfo().then((resp) => setUsers(resp));
   }, []);
 
-  if (!comments || !comments.length || !users || !users.length) return null;
+  if (!users || !users.length) return null;
 
   return (
     <Box
@@ -91,48 +92,55 @@ const Comments: React.FC<ICommentsProps> = ({ initComments }) => {
           </Button>
         </AccordionDetails>
       </Accordion>
-      {comments.map((comment) => (
-        <Box
-          key={`comment-${comment.id}`}
-          sx={({ palette }) => ({
-            borderBottom: `1px solid ${palette.grey[800]}`,
-            pb: 1,
-            mt: 3,
-            display: "flex",
-            flexDirection: "column",
-          })}
-        >
-          <Box display="flex" columnGap="10px" alignItems="flex-end" mb={2}>
-            <Typography variant="h5" mr="auto">
-              {users.find((user) => user.id === comment.author).name}
-            </Typography>
-            <Typography variant="subtitle2" fontWeight="light">
-              {new Date(comment.created_at).toLocaleString("ru", { dateStyle: "long" })}
-            </Typography>
-          </Box>
-          <Typography
-            variant="body1"
-            sx={{
-              wordBreak: "break-word",
-              p: 2,
-              borderRadius: 2,
-              backgroundColor: ({ palette }) => `${palette.info.main}0D`,
-            }}
+      {comments &&
+        !!comments.length &&
+        comments.map((comment) => (
+          <Box
+            key={`comment-${comment.id}`}
+            sx={({ palette }) => ({
+              borderBottom: `1px solid ${palette.grey[800]}`,
+              pb: 1,
+              mt: 3,
+              display: "flex",
+              flexDirection: "column",
+            })}
           >
-            {comment.text}
-          </Typography>
-          {comment.author === me.id && (
-            <Button
-              variant="text"
-              color="error"
-              sx={{ ml: "auto", mt: 1 }}
-              onClick={() => delComment(comment.id)}
+            <Box display="flex" columnGap="10px" alignItems="center" mb={2}>
+              <CardMedia
+                component="img"
+                src={users.find((user) => user.id === comment.author).avatar}
+                sx={{ height: "50px", width: "50px", borderRadius: "50%" }}
+              />
+              <Typography variant="h5" mr="auto">
+                {users.find((user) => user.id === comment.author).name}
+              </Typography>
+              <Typography variant="subtitle2" fontWeight="light">
+                {new Date(comment.created_at).toLocaleString("ru", { dateStyle: "long" })}
+              </Typography>
+            </Box>
+            <Typography
+              variant="body1"
+              sx={{
+                wordBreak: "break-word",
+                p: 2,
+                borderRadius: 2,
+                backgroundColor: ({ palette }) => `${palette.info.main}0D`,
+              }}
             >
-              Удалить комментарий
-            </Button>
-          )}
-        </Box>
-      ))}
+              {comment.text}
+            </Typography>
+            {comment.author === me.id && (
+              <Button
+                variant="text"
+                color="error"
+                sx={{ ml: "auto", mt: 1 }}
+                onClick={() => delComment(comment.id)}
+              >
+                Удалить комментарий
+              </Button>
+            )}
+          </Box>
+        ))}
     </Box>
   );
 };

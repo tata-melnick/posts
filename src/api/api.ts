@@ -57,6 +57,36 @@ class API {
     return { ...user, id: user._id };
   }
 
+  static async EditUserInfo(body: Pick<UserType, "name" | "about">): Promise<UserType> {
+    const token = window.sessionStorage.getItem(TOKEN);
+    const response = await fetch(`${this.options.baseUrl}${this.options.groupId}/users/me`, {
+      method: "PATCH",
+      headers: {
+        ...(token && { authorization: `Bearer ${token}` }),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    const user = await response.json();
+    // eslint-disable-next-line no-underscore-dangle
+    return { ...user, id: user._id };
+  }
+
+  static async EditUserAvatar(avatar: string): Promise<UserType> {
+    const token = window.sessionStorage.getItem(TOKEN);
+    const response = await fetch(`${this.options.baseUrl}${this.options.groupId}/users/me/avatar`, {
+      method: "PATCH",
+      headers: {
+        ...(token && { authorization: `Bearer ${token}` }),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ avatar }),
+    });
+    const user = await response.json();
+    // eslint-disable-next-line no-underscore-dangle
+    return { ...user, id: user._id };
+  }
+
   static async GetUsersInfo(): Promise<Array<UserType>> {
     const token = window.sessionStorage.getItem(TOKEN);
     const response = await fetch(`${this.options.baseUrl}${this.options.groupId}/users`, {
