@@ -1,26 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import { Route, Routes } from "react-router";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import Layout from "./Layout";
+import { darkTheme, lightTheme, RouterNames, TOKEN } from "./constants";
+import { NotFound, PostDetail, PostsList, Welcome } from "./pages";
+import { useAppDispatch, useAppSelector } from "./store";
+import { setModalAuth } from "./store/modals";
+import { API } from "./api";
+import { setUserData } from "./store/user";
 
-function App() {
+const App: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { theme } = useAppSelector((state) => state);
+
+  useEffect(() => {
+    const token = window.sessionStorage.getItem(TOKEN);
+    if (!token) dispatch(setModalAuth(true));
+    else API.GetUserInfo().then((resp) => dispatch(setUserData(resp)));
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme.isDark ? darkTheme : lightTheme}>
+      <CssBaseline />
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index path="/" element={<Welcome />} />
+          <Route path="*" element={<NotFound />} />
+          <Route path={RouterNames.list} element={<PostsList />} />
+          <Route path={RouterNames.detail} element={<PostDetail />} />
+        </Route>
+      </Routes>
+    </ThemeProvider>
   );
-}
+};
 
 export default App;
