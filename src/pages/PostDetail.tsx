@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "../store";
 import { DetailCard, Comments } from "../componets";
 import { ConfirmModal } from "../modals";
 import { API } from "../api";
-import { setPostDetail, setPostsList } from "../store/posts";
+import { setPostDetail } from "../store/posts";
 import { setModalEditPost } from "../store/modals";
 
 const PostDetail: React.FC = () => {
@@ -15,27 +15,21 @@ const PostDetail: React.FC = () => {
   const { search } = useLocation();
   const postId = search.split("=")[1];
   const { user } = useAppSelector((state) => state);
-  const { list, detail } = useAppSelector((state) => state.posts);
+  const { detail } = useAppSelector((state) => state.posts);
   const [openConfirmModal, setOpenConfirmModal] = useState<boolean>(false);
 
   const goBack = () => navigate(-1);
   const toggleOpenConfirmModal = () => setOpenConfirmModal((prevState) => !prevState);
   const openEditForm = () => dispatch(setModalEditPost(true));
   const delPost = async () => {
-    const resp = await API.DeletePost(detail.id);
-    if (resp) {
-      const newPosts = list.filter((el) => el.id !== detail.id);
-      dispatch(setPostsList(newPosts));
-      goBack();
-    }
+    await API.DeletePost(detail.id);
+    goBack();
   };
 
   useEffect(() => {
-    if (!list.length)
-      API.GetPostById(postId).then((resp) => {
-        dispatch(setPostDetail(resp));
-      });
-    else dispatch(setPostDetail(list.find((el) => el.id === postId)));
+    API.GetPostById(postId).then((resp) => {
+      dispatch(setPostDetail(resp));
+    });
     return () => {
       dispatch(setPostDetail(null));
     };

@@ -21,14 +21,12 @@ const PostsList: React.FC = () => {
   }, [page, list]);
 
   useEffect(() => {
-    if (!list.length) {
-      setIsLoading(true);
-      API.GetPosts().then((resp) => {
-        if ("err" in resp) setError(true);
-        else dispatch(setPostsList(resp));
-        setIsLoading(false);
-      });
-    }
+    setIsLoading(true);
+    API.GetPosts().then((resp) => {
+      if ("err" in resp) setError(true);
+      else dispatch(setPostsList(resp));
+      setIsLoading(false);
+    });
   }, []);
 
   return (

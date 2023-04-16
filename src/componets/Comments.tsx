@@ -14,6 +14,7 @@ import { API, CommentType, PostType, UserType } from "../api";
 import StyledTextField from "./StyledTextField";
 import { useAppDispatch, useAppSelector } from "../store";
 import { setPostDetail } from "../store/posts";
+import { ConfirmModal } from "../modals";
 
 interface ICommentsProps {
   initComments: Array<CommentType>;
@@ -27,6 +28,7 @@ const Comments: React.FC<ICommentsProps> = ({ initComments }) => {
   const [comments, setComments] = useState<Array<CommentType>>([...initComments].reverse() || null);
   const [users, setUsers] = useState<Array<UserType>>(null);
   const [text, setText] = useState<string>("");
+  const [openConfirmModal, setOpenConfirmModal] = useState<boolean>(false);
 
   const handleSetText = (e: ChangeEvent<HTMLInputElement>) => setText(e.target.value);
   const setData = (post: PostType) => {
@@ -34,6 +36,7 @@ const Comments: React.FC<ICommentsProps> = ({ initComments }) => {
     dispatch(setPostDetail(post));
     setComments([...post.comments].reverse());
   };
+  const toggleOpenConfirmModal = () => setOpenConfirmModal((prevState) => !prevState);
 
   const addComment = async () => {
     const post = await API.AddComment(postId, text);
@@ -65,7 +68,10 @@ const Comments: React.FC<ICommentsProps> = ({ initComments }) => {
     >
       <Typography variant="h5">Комментарии</Typography>
       <Accordion
-        sx={{ boxShadow: "none", borderBottom: ({ palette }) => `1px solid ${palette.grey[800]}` }}
+        sx={{
+          boxShadow: "none",
+          borderBottom: ({ palette }) => `1px solid ${palette.grey[800]}`,
+        }}
       >
         <AccordionSummary
           sx={{ p: 0 }}
@@ -130,14 +136,22 @@ const Comments: React.FC<ICommentsProps> = ({ initComments }) => {
               {comment.text}
             </Typography>
             {comment.author === me.id && (
-              <Button
-                variant="text"
-                color="error"
-                sx={{ ml: "auto", mt: 1 }}
-                onClick={() => delComment(comment.id)}
-              >
-                Удалить комментарий
-              </Button>
+              <>
+                <Button
+                  variant="text"
+                  color="error"
+                  sx={{ ml: "auto", mt: 1 }}
+                  onClick={toggleOpenConfirmModal}
+                >
+                  Удалить комментарий
+                </Button>
+                <ConfirmModal
+                  text="Вы точно хотите удалить комментарий?"
+                  open={openConfirmModal}
+                  close={toggleOpenConfirmModal}
+                  confirm={() => delComment(comment.id)}
+                />
+              </>
             )}
           </Box>
         ))}

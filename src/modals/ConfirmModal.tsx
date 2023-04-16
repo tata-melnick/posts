@@ -6,7 +6,7 @@ interface IConfirmModalProps {
   text: string;
   open: boolean;
   close(): void;
-  confirm(): void;
+  confirm(): void | Promise<void>;
 }
 
 const ConfirmModal: React.FC<IConfirmModalProps> = ({ confirm, text, open, close }) => {
@@ -17,11 +17,11 @@ const ConfirmModal: React.FC<IConfirmModalProps> = ({ confirm, text, open, close
 
   return (
     <Modal open={open} onClose={close}>
-      <Box sx={{ ...modalStyle, p: 2, width: "385px", borderRadius: "10px" }}>
+      <Box sx={{ ...modalStyle, p: 2, width: "max-content", borderRadius: "10px" }}>
         <Typography variant="h5" color="error">
           {text}
         </Typography>
-        <Box display="flex" columnGap={2}>
+        <Box display="flex" columnGap={2} mt={1}>
           <Button sx={{ flex: 1 }} onClick={handleConfirm} variant="contained" color="error">
             ДА
           </Button>
