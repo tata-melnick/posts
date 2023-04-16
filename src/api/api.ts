@@ -290,7 +290,14 @@ class API {
         ...(token && { authorization: `Bearer ${token}` }),
       },
     });
-    return response.json();
+    const post = await response.json();
+    return {
+      ...post,
+      // eslint-disable-next-line no-underscore-dangle
+      id: post._id,
+      // eslint-disable-next-line no-underscore-dangle
+      author: { ...post.author, id: post.author._id },
+    };
   }
 }
 
