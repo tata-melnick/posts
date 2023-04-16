@@ -6,15 +6,14 @@ import {
   AccordionSummary,
   Box,
   Button,
-  CardMedia,
   Typography,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 import { API, CommentType, PostType, UserType } from "../api";
 import StyledTextField from "./StyledTextField";
-import { useAppDispatch, useAppSelector } from "../store";
+import { useAppDispatch } from "../store";
 import { setPostDetail } from "../store/posts";
-import { ConfirmModal } from "../modals";
+import Comment from "./Comment";
 
 interface ICommentsProps {
   initComments: Array<CommentType>;
@@ -24,11 +23,9 @@ const Comments: React.FC<ICommentsProps> = ({ initComments }) => {
   const dispatch = useAppDispatch();
   const { search } = useLocation();
   const postId = search.split("=")[1];
-  const { user: me } = useAppSelector((state) => state);
   const [comments, setComments] = useState<Array<CommentType>>([...initComments].reverse() || null);
   const [users, setUsers] = useState<Array<UserType>>(null);
   const [text, setText] = useState<string>("");
-  const [openConfirmModal, setOpenConfirmModal] = useState<boolean>(false);
 
   const handleSetText = (e: ChangeEvent<HTMLInputElement>) => setText(e.target.value);
   const setData = (post: PostType) => {
@@ -36,15 +33,9 @@ const Comments: React.FC<ICommentsProps> = ({ initComments }) => {
     dispatch(setPostDetail(post));
     setComments([...post.comments].reverse());
   };
-  const toggleOpenConfirmModal = () => setOpenConfirmModal((prevState) => !prevState);
 
   const addComment = async () => {
     const post = await API.AddComment(postId, text);
-    setData(post);
-  };
-
-  const delComment = async (commentId: string) => {
-    const post = await API.DelComment(postId, commentId);
     setData(post);
   };
 
@@ -100,61 +91,7 @@ const Comments: React.FC<ICommentsProps> = ({ initComments }) => {
       </Accordion>
       {comments &&
         !!comments.length &&
-        comments.map((comment) => (
-          <Box
-            key={`comment-${comment.id}`}
-            sx={({ palette }) => ({
-              borderBottom: `1px solid ${palette.grey[800]}`,
-              pb: 1,
-              mt: 3,
-              display: "flex",
-              flexDirection: "column",
-            })}
-          >
-            <Box display="flex" columnGap="10px" alignItems="center" mb={2}>
-              <CardMedia
-                component="img"
-                src={users.find((user) => user.id === comment.author).avatar}
-                sx={{ height: "50px", width: "50px", borderRadius: "50%" }}
-              />
-              <Typography variant="h5" mr="auto">
-                {users.find((user) => user.id === comment.author).name}
-              </Typography>
-              <Typography variant="subtitle2" fontWeight="light">
-                {new Date(comment.created_at).toLocaleString("ru", { dateStyle: "long" })}
-              </Typography>
-            </Box>
-            <Typography
-              variant="body1"
-              sx={{
-                wordBreak: "break-word",
-                p: 2,
-                borderRadius: 2,
-                backgroundColor: ({ palette }) => `${palette.info.main}0D`,
-              }}
-            >
-              {comment.text}
-            </Typography>
-            {comment.author === me.id && (
-              <>
-                <Button
-                  variant="text"
-                  color="error"
-                  sx={{ ml: "auto", mt: 1 }}
-                  onClick={toggleOpenConfirmModal}
-                >
-                  Удалить комментарий
-                </Button>
-                <ConfirmModal
-                  text="Вы точно хотите удалить комментарий?"
-                  open={openConfirmModal}
-                  close={toggleOpenConfirmModal}
-                  confirm={() => delComment(comment.id)}
-                />
-              </>
-            )}
-          </Box>
-        ))}
+        comments.map((comment) => <Comment comment={comment} users={users} setData={setData} />)}
     </Box>
   );
 };
