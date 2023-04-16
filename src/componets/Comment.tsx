@@ -25,7 +25,6 @@ const Comment: React.FC<ICommentProps> = ({ comment, users, setData }) => {
   };
   return (
     <Box
-      key={`comment-${comment.id}`}
       sx={({ palette }) => ({
         borderBottom: `1px solid ${palette.grey[800]}`,
         pb: 1,
