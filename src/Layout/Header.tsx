@@ -1,7 +1,7 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
-import PostAddIcon from "@mui/icons-material/PostAdd";
+import { PostAdd } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../store";
 import { setModalAuth } from "../store/modals";
 import { RouterNames } from "../constants";
@@ -16,9 +16,9 @@ const Header: React.FC = () => {
   const goToProfile = () => navigate(RouterNames.profile);
 
   return (
-    <AppBar position="static" sx={{ padding: "0 76px" }}>
+    <AppBar position="static" sx={{ p: "0 76px" }}>
       <Toolbar>
-        <PostAddIcon sx={{ marginRight: "10px" }} />
+        <PostAdd sx={{ mr: 1, mb: "5px" }} />
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           Посты
         </Typography>

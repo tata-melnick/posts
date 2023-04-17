@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Route, Routes } from "react-router";
+import { Route, Routes, useLocation, useNavigate } from "react-router";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import Layout from "./Layout";
 import { darkTheme, lightTheme, RouterNames, TOKEN } from "./constants";
@@ -11,13 +11,25 @@ import { setUserData } from "./store/user";
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { theme } = useAppSelector((state) => state);
+  const { auth } = useAppSelector((state) => state.modals);
+  const { user } = useAppSelector((state) => state);
 
   useEffect(() => {
     const token = window.sessionStorage.getItem(TOKEN);
     if (!token) dispatch(setModalAuth(true));
     else API.GetUserInfo().then((resp) => dispatch(setUserData(resp)));
   }, []);
+
+  useEffect(() => {
+    if (!user && !auth && !window.sessionStorage.getItem("token")) dispatch(setModalAuth(true));
+  }, [auth]);
+
+  useEffect(() => {
+    if (!user && !window.sessionStorage.getItem("token")) navigate("/");
+  }, [pathname]);
 
   return (
     <ThemeProvider theme={theme.isDark ? darkTheme : lightTheme}>

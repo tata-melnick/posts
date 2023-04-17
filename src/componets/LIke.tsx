@@ -14,7 +14,7 @@ const Like: React.FC<ILikeProps> = ({ likes: initLikes, postId }) => {
   const [likes, setLikes] = useState<Array<string>>(initLikes || []);
 
   const changeLike = async () => {
-    const response = await API.ChangeLikePost(postId, !likes.includes(user.id));
+    const response = await API.ChangeLikePost(postId, !likes?.includes(user.id));
     setLikes(response.likes);
   };
 
@@ -23,7 +23,7 @@ const Like: React.FC<ILikeProps> = ({ likes: initLikes, postId }) => {
       sx={{ cursor: "pointer", mr: 2, display: "flex", alignItems: "center" }}
       onClick={changeLike}
     >
-      {likes.includes(user?.id) ? (
+      {likes.includes(user.id) ? (
         <Favorite sx={{ mr: 0.5, color: ({ palette }) => palette.error.main }} />
       ) : (
         <FavoriteBorder sx={{ mr: 0.5 }} />

@@ -40,7 +40,9 @@ class API {
       },
       body: JSON.stringify(data),
     });
-    return response.json();
+    const user = await response.json();
+    // eslint-disable-next-line no-underscore-dangle
+    return { ...user, data: { ...user.data, id: user.data._id } };
   }
 
   static async GetUserInfo(): Promise<UserType> {
