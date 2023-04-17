@@ -13,7 +13,7 @@ export type UserType = {
 };
 
 export type CommentType = {
-  author: string;
+  author: UserType;
   created_at: string;
   post: string;
   text: string;

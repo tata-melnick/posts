@@ -2,16 +2,15 @@ import React, { useState } from "react";
 import { useLocation } from "react-router";
 import { Box, Button, CardMedia, Typography } from "@mui/material";
 import { ConfirmModal } from "../modals";
-import { API, CommentType, PostType, UserType } from "../api";
+import { API, CommentType, PostType } from "../api";
 import { useAppSelector } from "../store";
 
 interface ICommentProps {
   comment: CommentType;
-  users: Array<UserType>;
   setData(post: PostType): void;
 }
 
-const Comment: React.FC<ICommentProps> = ({ comment, users, setData }) => {
+const Comment: React.FC<ICommentProps> = ({ comment, setData }) => {
   const { search } = useLocation();
   const postId = search.split("=")[1];
   const { user: me } = useAppSelector((state) => state);
@@ -36,11 +35,11 @@ const Comment: React.FC<ICommentProps> = ({ comment, users, setData }) => {
       <Box display="flex" columnGap="10px" alignItems="center" mb={2}>
         <CardMedia
           component="img"
-          src={users.find((user) => user.id === comment.author).avatar}
+          src={comment.author?.avatar}
           sx={{ height: "50px", width: "50px", borderRadius: "50%" }}
         />
         <Typography variant="h5" mr="auto">
-          {users.find((user) => user.id === comment.author).name}
+          {comment.author?.name}
         </Typography>
         <Typography variant="subtitle2" fontWeight="light">
           {new Date(comment.created_at).toLocaleString("ru", { dateStyle: "long" })}
@@ -57,7 +56,7 @@ const Comment: React.FC<ICommentProps> = ({ comment, users, setData }) => {
       >
         {comment.text}
       </Typography>
-      {comment.author === me.id && (
+      {comment.author.id === me.id && (
         <>
           <Button
             variant="text"

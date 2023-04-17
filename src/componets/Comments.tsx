@@ -92,12 +92,7 @@ const Comments: React.FC<ICommentsProps> = ({ initComments }) => {
       {comments &&
         !!comments.length &&
         comments.map((comment) => (
-          <Comment
-            key={`comment-${comment.id}`}
-            comment={comment}
-            users={users}
-            setData={setData}
-          />
+          <Comment key={`comment-${comment.id}`} comment={comment} setData={setData} />
         ))}
     </Box>
   );
