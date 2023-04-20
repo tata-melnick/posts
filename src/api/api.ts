@@ -184,7 +184,11 @@ class API {
     });
     const comments = await response.json();
     // eslint-disable-next-line no-underscore-dangle
-    return comments.map((el) => ({ ...el, id: el._id }));
+    return comments.map((el) => ({
+      ...el,
+      // eslint-disable-next-line no-underscore-dangle
+      id: el._id,
+    }));
   }
 
   static async AddComment(postId: string, text: string): Promise<PostType> {
@@ -204,7 +208,13 @@ class API {
       // eslint-disable-next-line no-underscore-dangle
       id: post._id,
       // eslint-disable-next-line no-underscore-dangle
-      comments: post.comments.map((el) => ({ ...el, id: el._id })),
+      comments: post.comments.map((el) => ({
+        ...el,
+        // eslint-disable-next-line no-underscore-dangle
+        id: el._id,
+        // eslint-disable-next-line no-underscore-dangle
+        author: { ...el.author, id: el.author._id },
+      })),
       // eslint-disable-next-line no-underscore-dangle
       author: { ...post.author, id: post.author._id },
     };
@@ -226,7 +236,13 @@ class API {
       // eslint-disable-next-line no-underscore-dangle
       id: post._id,
       // eslint-disable-next-line no-underscore-dangle
-      comments: post.comments.map((el) => ({ ...el, id: el._id })),
+      comments: post.comments.map((el) => ({
+        ...el,
+        // eslint-disable-next-line no-underscore-dangle
+        id: el._id,
+        // eslint-disable-next-line no-underscore-dangle
+        author: { ...el.author, id: el.author._id },
+      })),
       // eslint-disable-next-line no-underscore-dangle
       author: { ...post.author, id: post.author._id },
     };
